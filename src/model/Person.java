@@ -24,6 +24,13 @@ public class Person {
         this.currentSide = startSide;
     }
 
+    public Person(Person person) {
+        this.type = person.getType();
+        this.maxCrossings = person.getMaxCrossings();
+        this.crossings = person.getCrossings();
+        this.currentSide = person.getCurrentSide();
+    }
+
     public PersonType getType() {
         return type;
     }
