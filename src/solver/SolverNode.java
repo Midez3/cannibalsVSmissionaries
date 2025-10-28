@@ -4,17 +4,20 @@ import model.Situation;
 
 import java.util.List;
 
-// Вспомогательный класс для хранения состояния и пути до него
+/**
+ * Класс описывает состояние узла
+ */
 public class SolverNode {
-    Situation state;
-    List<String> moves;
-    List<String> lastMove;
-    int depth;
+    Situation state; // Состояние игрового поля
+    List<String> moves; // Список пройденных шагов
+    int depth; // Количество шагов до текущего узла
 
-    SolverNode(Situation state, List<String> moves, int depth, List<String> lastMove) {
+    /**
+     * Конструктор
+     */
+    SolverNode(Situation state, List<String> moves, int depth) {
         this.state = state;
         this.moves = moves;
-        this.lastMove = lastMove;
         this.depth = depth;
     }
 }

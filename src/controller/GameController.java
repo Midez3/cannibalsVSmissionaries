@@ -4,7 +4,13 @@ import model.Situation;
 import view.GameView;
 
 import java.util.Scanner;
-
+/** Класс предназначен для запуска игры человеком и задания начальных условий
+ *  Пользователю необходимо указать стартовые параметры игры, такие как:
+ *      — Количество миссионеров
+ *      — Количество людоедов
+ *      — Максимально количество переправ на одного персонажа
+ *      — Максимальное количество всех переправ за игру
+ */
 public class GameController {
     private Situation state;
     private final GameView view;

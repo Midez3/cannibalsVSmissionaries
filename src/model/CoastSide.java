@@ -1,6 +1,6 @@
 package model;
 /**
- * Перечисление берегов
+ * Перечисление сторон берега
  */
 public enum CoastSide {
     LEFT,

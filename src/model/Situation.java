@@ -7,17 +7,24 @@ import java.util.List;
  * Класс, описывающий состояние игры "Миссионеры и людоеды".
  */
 public class Situation {
-    private int missionariesLeft;
-    private int cannibalsLeft;
-    private int missionariesRigth;
-    private int cannibalsRigth;
-    private final int totalMissionaries;
-    private final int totalCannibals;
-    private CoastSide boatSide; // ← теперь enum вместо строки
-    private final List<Person> people;
-    private final int maxBoatCrossings; // Максимальное количество переправ лодки
-    private int boatCrossings;           // Сколько раз лодка уже переправлялась
+    private int missionariesLeft;           // Количество миссионеров на левом берегу
+    private int cannibalsLeft;              // Количество каннибалов на левом берегу
+    private int missionariesRigth;          // Количество миссионеров на правом берегу
+    private int cannibalsRigth;             // Количество каннибалов на правом берегу
+    private final int totalMissionaries;    // Общее количество миссионеров на двух берегах
+    private final int totalCannibals;       // Общее количество каннибалов на двух берегах
+    private CoastSide boatSide;             // Берег, на котором находится лодка
+    private final List<Person> people;      // Общий список с персонажами
+    private final int maxBoatCrossings;     // Максимальное количество переправ лодки
+    private int boatCrossings;              // Сколько раз лодка уже переправлялась
 
+    /**
+     * Конструктор класса Situation
+     * @param missionaries
+     * @param cannibals
+     * @param maxCrossings
+     * @param maxBoatCrossings
+     */
     public Situation(int missionaries, int cannibals, int maxCrossings, int maxBoatCrossings) {
         this.missionariesLeft = missionaries;
         this.cannibalsLeft = cannibals;

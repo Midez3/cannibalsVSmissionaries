@@ -3,8 +3,14 @@ package view;
 import model.CoastSide;
 import model.Situation;
 
+/**
+ * Класс для отображения информации о состоянии игры на текущий момент
+ */
 public class GameView {
-
+    /**
+     * Выводит информацию об игровом поле
+     * @param state — Состояние игрового поля
+     */
     public void printState(Situation state) {
         System.out.println("\n==================================================");
         System.out.println("  Левый берег:");
@@ -25,7 +31,11 @@ public class GameView {
         System.out.println();
     }
 
-    public void printMessage(String msg) {
-        System.out.println(msg);
+    /**
+     *  Метод для вывода сообщений игроку
+     * @param message — Сообщение для игрока
+     */
+    public void printMessage(String message) {
+        System.out.println(message);
     }
 }
