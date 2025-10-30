@@ -17,11 +17,13 @@ public class StartSolver {
         // Создаём начальное состояние игры
         Situation game = new Situation(missionaries, cannibals, maxPersonCrossings, maxBoatCrossings);
 
-        // Создаём решатель (итеративный DFS)
-        SolverDFS solverDFS = new SolverDFS(2000); // ограничение глубины поиска
+        // Создаём решатель
+        SolverDFS solverDFS = new SolverDFS(20); // ограничение глубины поиска
+        SolverBFS solverBFS = new SolverBFS();
 
         // Запускаем поиск решения
         List<String> solution = solverDFS.solve(game);
+//        List<String> solution = solverBFS.solve(game);
 
         // Выводим результат
         if (solution == null || solution.isEmpty() || (solution.size() == 1 && solution.get(0).equals("Решение не найдено"))) {

@@ -9,23 +9,27 @@ import java.util.List;
  */
 public class SolverNode {
     Situation state; // Состояние игрового поля
-    List<String> moves; // Список пройденных шагов
+    private SolverNode parent; //
     int depth; // Количество шагов до текущего узла
 
     /**
      * Конструктор
      */
-    SolverNode(Situation state, List<String> moves, int depth) {
+    public SolverNode(Situation state, int depth) {
         this.state = state;
-        this.moves = moves;
         this.depth = depth;
     }
 
     /**
      * Конструктор
      */
-    SolverNode(Situation state, int depth) {
+    public SolverNode(Situation state, SolverNode parent, int depth) {
         this.state = state;
+        this.parent = parent;
         this.depth = depth;
+    }
+
+    public SolverNode getParent(){
+        return parent;
     }
 }
