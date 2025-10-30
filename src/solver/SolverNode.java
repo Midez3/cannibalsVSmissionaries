@@ -20,4 +20,12 @@ public class SolverNode {
         this.moves = moves;
         this.depth = depth;
     }
+
+    /**
+     * Конструктор
+     */
+    SolverNode(Situation state, int depth) {
+        this.state = state;
+        this.depth = depth;
+    }
 }

@@ -4,6 +4,7 @@ import model.CoastSide;
 import model.Situation;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Класс для реализации поиска в глубину
@@ -28,7 +29,7 @@ public class SolverDFS {
      * @param visited множество ключей уже посещённых состояний
      * @return true — если узел нужно пропустить, false — если следует обработать
      */
-    private boolean shouldSkipNode(SolverNode node, Set<String> visited) {
+    private boolean shouldSkipNode(SolverNode node, List<String> visited) {
         if (node.depth > maxDepth) return true; // Пропуск узла, если достигнута максимальная глубина
         return visited.contains(node.state.getKey()); // Пропускаем узел, состояние которых уже посещалось
     }
@@ -42,7 +43,7 @@ public class SolverDFS {
      * @param stack   стек, содержащий пройденный ранее путь до текущего узла
      * @param visited множество уже посещённых состояний
      */
-    private void exploreNextStates(SolverNode current, Deque<SolverNode> stack, Set<String> visited) {
+    private void exploreNextStates(SolverNode current, Deque<SolverNode> stack, List<String> visited) {
         // Возможные варианты перемещения: (миссионеры, людоеды)
         int[][] possibleMoves = {
                 {1, 0},  // 1 миссионер
@@ -69,13 +70,9 @@ public class SolverDFS {
                     next.getMissionariesLeft(), next.getCannibalsLeft(),
                     next.getMissionariesRigth(), next.getCannibalsRigth())) continue;
 
-
-            List<String> newMoves = new ArrayList<>(current.moves); // Создаем новый список с шагами до текущего состояния
-            newMoves.add(describeMove(state.getBoatSide(), next.getBoatSide(), m, c)); // Добавляем текущий ход
-
             // Добавляем новое состояние в стек, если оно не посещалось ранее
             if (!visited.contains(next.getKey())) {
-                stack.push(new SolverNode(next, newMoves, current.depth + 1));
+                stack.push(new SolverNode(next, current.depth + 1));
             }
         }
     }
@@ -102,12 +99,12 @@ public class SolverDFS {
      *
      * @param initialState начальное состояние игрового поля
      * @return список текстовых описаний шагов, представляющих найденное решение;
-     *         пустой список, если решения не существует
+     * пустой список, если решения не существует
      */
     public List<String> solve(Situation initialState) {
         // Инициализация стека и множества посещённых состояний
         Deque<SolverNode> stack = new ArrayDeque<>();
-        Set<String> visited = new HashSet<>();
+        List<String> moves = new ArrayList<>();
 
         // Помещаем начальное состояние в стек
         stack.push(new SolverNode(initialState, new ArrayList<>(), 0));
@@ -116,19 +113,20 @@ public class SolverDFS {
         while (!stack.isEmpty()) {
             // Извлекаем текущий узел из стека (LIFO)
             SolverNode current = stack.pop();
-
             // Пропускаем узлы, которые уже были посещены или слишком глубокие
-            if (shouldSkipNode(current, visited)) continue;
-            visited.add(current.state.getKey());
-
+            if (shouldSkipNode(current, moves)) continue;
+            moves.add(current.state.getKey());
             // Проверяем, достигнута ли цель
-            if (current.state.isWinning()) return current.moves;
+            if (current.state.isWinning())
+                return IntStream.range(1, moves.size())
+                        .mapToObj(i -> describeMove(moves.get(i - 1), moves.get(i)))
+                        .toList();
 
             // Если состояние проигрышное — не продолжаем
             if (current.state.isLosing()) continue;
 
             // Расширяем текущее состояние — ищем возможные ходы
-            exploreNextStates(current, stack, visited);
+            exploreNextStates(current, stack, moves);
         }
 
         // Если решения нет, возвращаем пустой список
@@ -138,13 +136,71 @@ public class SolverDFS {
 
     /**
      * Формируем описание хода для отображения
+     *
      * @param from — Сторона берега откуда лодка отплывает
-     * @param to — Сторона берега куда лодка приплывет
-     * @param m — Количество миссионеров в лодке
-     * @param c — Количество каннибалов в лодке
+     * @param to   — Сторона берега куда лодка приплывет
+     * @param m    — Количество миссионеров в лодке
+     * @param c    — Количество каннибалов в лодке
      * @return — Функция возвращает строку с описанием хода
      */
     private String describeMove(CoastSide from, CoastSide to, int m, int c) {
         return "Лодка перевезла " + m + " миссионеров и " + c + " людоедов с " + from + " на " + to;
     }
+
+    /**
+     * Формируем описание хода для отображения
+     *
+     * @param from — Сторона берега откуда лодка отплывает
+     * @param to   — Сторона берега куда лодка приплывет
+     * @param m    — Количество миссионеров в лодке
+     * @param c    — Количество каннибалов в лодке
+     * @return — Функция возвращает строку с описанием хода
+     */
+    private String describeMove(String move, String lastState) {
+        // Разбиваем строку "3-3-0-0-LEFT" на части
+        String[] parts = move.split("-");
+        // Разбиваем строку "3-3-0-0-LEFT" на части
+        String[] lastParts = lastState.split("-");
+        if (parts.length != 5) {
+            return "Некорректный формат хода: " + move;
+        }
+
+        try {
+            int mLeft = Integer.parseInt(parts[0]);
+            int cLeft = Integer.parseInt(parts[1]);
+            int mRight = Integer.parseInt(parts[2]);
+            int cRight = Integer.parseInt(parts[3]);
+            int mLeftLast = Integer.parseInt(lastParts[0]);
+            int cLeftLast = Integer.parseInt(lastParts[1]);
+            int mRightLast = Integer.parseInt(lastParts[2]);
+            int cRightLast = Integer.parseInt(lastParts[3]);
+            String boatSide = parts[4].trim().toUpperCase();
+
+            // Определяем стороны
+            CoastSide from;
+            CoastSide to;
+            int movedM, movedC;
+            // Если лодка была слева, значит, она плывёт направо
+            if (boatSide.equals("LEFT")) {
+                from = CoastSide.RIGHT;
+                to = CoastSide.LEFT;
+                // Вычисляем, сколько миссионеров и людоедов перевезено
+                movedM = Math.abs(mRight - mRightLast);
+                movedC = Math.abs(cRight - cRightLast);
+            } else if (boatSide.equals("RIGHT")) {
+                from = CoastSide.LEFT;
+                to = CoastSide.RIGHT;
+                movedM = Math.abs(mLeft - mLeftLast);
+                movedC = Math.abs(cLeft - cLeftLast);
+            } else {
+                return "Некорректная сторона лодки: " + boatSide;
+            }
+
+            return "Лодка перевезла " + movedM + " миссионеров и " + movedC + " людоедов с " + from + " на " + to;
+
+        } catch (NumberFormatException e) {
+            return "Ошибка разбора чисел в строке: " + move;
+        }
+    }
+
 }
