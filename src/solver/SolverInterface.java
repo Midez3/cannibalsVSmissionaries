@@ -13,5 +13,5 @@ public interface SolverInterface {
      * @param initialState — начально состояние игрового поля
      * @return — список ходов для прохождения игры
      */
-    List<String> solve(Situation initialState);
+    List<String> searchSolution(Situation initialState);
 }

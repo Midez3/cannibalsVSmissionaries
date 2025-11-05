@@ -8,16 +8,22 @@ import java.util.List;
  * Класс описывает состояние узла
  */
 public class SolverNode {
-    Situation state; // Состояние игрового поля
-    private SolverNode parent; //
-    int depth; // Количество шагов до текущего узла
+    private Situation state; // Состояние игрового поля
+    private SolverNode parent; // родительский узел
+    private int depth; // Количество шагов до текущего узла
 
     /**
      * Конструктор
      */
-    public SolverNode(Situation state, int depth) {
-        this.state = state;
-        this.depth = depth;
+    public SolverNode(Situation state) {
+        this(state, null, 0);
+    }
+
+    /**
+     * Конструктор
+     */
+    public SolverNode(Situation state, SolverNode parent) {
+        this(state, parent, 0);
     }
 
     /**
@@ -31,5 +37,13 @@ public class SolverNode {
 
     public SolverNode getParent(){
         return parent;
+    }
+
+    public Situation getState() {
+        return state;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 }

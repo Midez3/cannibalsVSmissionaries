@@ -4,47 +4,16 @@ import model.CoastSide;
 import model.Situation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
+import java.util.stream.IntStream;
 
 /**
  * Абстрактный класс, содержащий общие методы для DFS и BFS.
  */
 public abstract class AbstractSolver implements SolverInterface {
-
-    /**
-     * Общая логика генерации следующих возможных состояний.
-     * @param state — состояние игрового поля
-     * @param visited — Посещенные вариации игры
-     * @return — новое состояние игрового поля
-     */
-    protected List<Situation> generateNextStates(Situation state, List<String> visited) {
-        List<Situation> nextStates = new ArrayList<>();
-        CoastSide side = state.getBoatSide();
-
-        int[][] possibleMoves = {
-                {1, 0}, {0, 1}, {1, 1}, {2, 0}, {0, 2}
-        };
-
-        for (int[] move : possibleMoves) {
-            int m = move[0];
-            int c = move[1];
-
-            if (!hasEnoughPeople(state, side, m, c)) continue;
-
-            Situation next = new Situation(state);
-            if (!next.makeMove(m, c)) continue;
-
-            if (!next.isValid(
-                    next.getMissionariesLeft(), next.getCannibalsLeft(),
-                    next.getMissionariesRigth(), next.getCannibalsRigth())) continue;
-
-            if (!visited.contains(next.getKey())) {
-                nextStates.add(next);
-            }
-        }
-
-        return nextStates;
-    }
+    final static int[][] POSSIBLE_MOVES = {{1, 0}, {0, 1}, {1, 1}, {2, 0}, {0, 2}};  //Возможные варианты ходов
 
     /**
      * Проверяет, достаточно ли людей для хода.
@@ -105,5 +74,22 @@ public abstract class AbstractSolver implements SolverInterface {
         } catch (NumberFormatException e) {
             return "Ошибка разбора чисел в состоянии";
         }
+    }
+
+    /**
+     * Построение пройденного пути
+     * @param goal — узел, на котором было найдено решение
+     * @return — список с описанием шагов найденного решения
+     */
+    protected List<String> buildPath(SolverNode goal) {
+        List<String> path = new ArrayList<>();
+        for (SolverNode node = goal; node != null; node = node.getParent()) {
+            path.add(node.getState().getKey());
+        }
+        Collections.reverse(path);
+
+        return IntStream.range(1, path.size())
+                .mapToObj(i -> describeMove(path.get(i - 1), path.get(i)))
+                .toList();
     }
 }

@@ -18,18 +18,18 @@ public class StartSolver {
         Situation game = new Situation(missionaries, cannibals, maxPersonCrossings, maxBoatCrossings);
 
         // Создаём решатель
-        SolverDFS solverDFS = new SolverDFS(20); // ограничение глубины поиска
-        SolverBFS solverBFS = new SolverBFS();
+        SolverDFS solverDFS = new SolverDFS(15);
+        SolverBFS solverBFS = new SolverBFS(15);
 
         // Запускаем поиск решения
-        List<String> solution = solverDFS.solve(game);
-//        List<String> solution = solverBFS.solve(game);
+        List<String> solution = solverDFS.searchSolution(game);
+//        List<String> solution = solverBFS.searchSolution(game);
 
         // Выводим результат
         if (solution == null || solution.isEmpty() || (solution.size() == 1 && solution.get(0).equals("Решение не найдено"))) {
-            System.out.println("❌ Решение не найдено");
+            System.out.println("Решение не найдено");
         } else {
-            System.out.println("✅ Решение найдено за " + solution.size() + " шагов:\n");
+            System.out.println("Решение найдено за " + solution.size() + " шагов:\n");
             for (int i = 0; i < solution.size(); i++) {
                 System.out.println((i + 1) + ". " + solution.get(i));
             }

@@ -21,35 +21,67 @@ public class SolverDFS extends AbstractSolver {
 
     /**
      * Метод поиска решения
-     * @param initialState — начально состояние игрового поля
+     * @param lastSituation — начально состояние игрового поля
      * @return — список ходов для прохождения игры
      */
     @Override
-    public List<String> solve(Situation initialState) {
+    public List<String> searchSolution(Situation lastSituation) {
         Stack<SolverNode> stack = new Stack<>();
-        List<String> visited = new ArrayList<>();
-
-        stack.push(new SolverNode(initialState, 0));
+        Situation newSituation;
+        stack.push(new SolverNode(lastSituation));
 
         while (!stack.isEmpty()) {
             SolverNode current = stack.pop();
-
-            if (visited.contains(current.state.getKey())) continue;
-            visited.add(current.state.getKey());
-
-            if (current.state.isWinning()) {
-                return IntStream.range(1, visited.size())
-                        .mapToObj(i -> describeMove(visited.get(i - 1), visited.get(i)))
-                        .toList();
+            if (current.getState().isWinning()) {
+                return buildPath(current); // строим путь по родителям
             }
 
-            if (current.state.isLosing() || current.depth >= maxDepth) continue;
+            if (current.getState().isLosing() || current.getDepth() >= maxDepth) continue;
 
-            for (Situation next : generateNextStates(current.state, visited)) {
-                stack.push(new SolverNode(next, current.depth + 1));
+            for (int[] move : POSSIBLE_MOVES) {
+                newSituation = current.getState().generateNextSituation(move);
+                if (newSituation!=null) {
+                    stack.push(new SolverNode(current.getState().generateNextSituation(move), current, current.getDepth() + 1));
+                }
             }
         }
 
         return Collections.emptyList();
     }
+
+    /**
+     * Метод поиска решения с проверкой посещенных состояний
+     * @param lastSituation — начально состояние игрового поля
+     * @return — список ходов для прохождения игры
+     */
+    @Deprecated
+    public List<String> searchSolutionWithCheckVisitedNode(Situation lastSituation) {
+        Stack<SolverNode> stack = new Stack<>();
+        List<String> visited = new ArrayList<>();
+        Situation newSituation;
+        stack.push(new SolverNode(lastSituation));
+
+        while (!stack.isEmpty()) {
+            SolverNode current = stack.pop();
+
+            if (visited.contains(current.getState().getKey())) continue;
+            visited.add(current.getState().getKey());
+
+            if (current.getState().isWinning()) {
+                return buildPath(current); // строим путь по родителям
+            }
+
+            if (current.getState().isLosing() || current.getDepth() >= maxDepth) continue;
+
+            for (int[] move : POSSIBLE_MOVES) {
+                newSituation = current.getState().generateNextSituation(move);
+                if (newSituation!=null) {
+                    stack.push(new SolverNode(current.getState().generateNextSituation(move), current, current.getDepth() + 1));
+                }
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
 }

@@ -20,10 +20,10 @@ public class Situation {
 
     /**
      * Конструктор класса Situation
-     * @param missionaries
-     * @param cannibals
-     * @param maxCrossings
-     * @param maxBoatCrossings
+     * @param missionaries — количество миссионеров
+     * @param cannibals — количество каннибалов
+     * @param maxCrossings — количество переправ на персонажа
+     * @param maxBoatCrossings — максимальное количество переправ за игру
      */
     public Situation(int missionaries, int cannibals, int maxCrossings, int maxBoatCrossings) {
         this.missionariesLeft = missionaries;
@@ -32,8 +32,8 @@ public class Situation {
         this.totalCannibals = cannibals;
         this.boatSide = CoastSide.LEFT;
         this.people = new ArrayList<>();
-        this.maxBoatCrossings = maxBoatCrossings; // лимит лодки
-        this.boatCrossings = 0;                   // начальное количество переправ
+        this.maxBoatCrossings = maxBoatCrossings;
+        this.boatCrossings = 0;
 
         for (int i = 0; i < missionaries; i++) {
             people.add(new Person(PersonType.MISSIONARY, maxCrossings, CoastSide.LEFT));
@@ -53,8 +53,8 @@ public class Situation {
         this.boatSide = CoastSide.LEFT;
         this.people = people;
         this.boatCrossings = boatCrossings;
-        this.maxBoatCrossings = maxBoatCrossings; // лимит лодки
-        this.boatCrossings = 0;                   // начальное количество переправ
+        this.maxBoatCrossings = maxBoatCrossings;
+        this.boatCrossings = 0;
     }
     
     public Situation(Situation state) {
@@ -68,7 +68,6 @@ public class Situation {
         this.boatCrossings = state.getBoatCrossings();
         this.maxBoatCrossings = state.getMaxBoatCrossings();
 
-        // ✅ Глубокая копия списка people
         this.people = new ArrayList<>();
         for (Person p : state.getPeople()) {
             this.people.add(new Person(p));
@@ -103,11 +102,15 @@ public class Situation {
         return missionariesLeft == 0 && cannibalsLeft == 0;
     }
 
+    /**
+     * Проверяет на проигрышное состояние
+     * @return — true – проиграл игрок, иначе нет
+     */
     public boolean isLosing() {
         int mRight = totalMissionaries - missionariesLeft;
         int cRight = totalCannibals - cannibalsLeft;
         if (boatCrossings >= maxBoatCrossings) {
-            System.out.println("❌ Лодка больше не может переправляться! Достигнут лимит переправ.");
+            System.out.println("Лодка больше не может переправляться! Достигнут лимит переправ.");
             return true;
         }
         if ((missionariesLeft > 0 && missionariesLeft < cannibalsLeft)
@@ -118,16 +121,14 @@ public class Situation {
         return false;
     }
 
-    public boolean isValid(int mLeft, int cLeft, int mRight, int cRight) {
-        if (mLeft < 0 || cLeft < 0 || mRight < 0 || cRight < 0)
-            return false;
-        if ((mLeft > 0 && mLeft < cLeft) || (mRight > 0 && mRight < cRight))
-            return false;
-        return true;
-    }
-
-    public boolean makeMove(int m, int c) {
-        if (m + c == 0 || m + c > 2)
+    /**
+     * Метод для перемещения персонажа
+     * @param missioners — количество миссионеров для переправы
+     * @param cannibals — количество каннибалов для переправы
+     * @return — возвращает true если удалось переправить персонажей, иначе возвращает false
+     */
+    public boolean makeMove(int missioners, int cannibals) {
+        if (missioners + cannibals == 0 || missioners + cannibals > 2)
             return false;
 
         CoastSide currentSide = boatSide;
@@ -137,7 +138,7 @@ public class Situation {
                 .filter(p -> p.getType() == PersonType.MISSIONARY
                         && p.getCurrentSide() == currentSide
                         && p.canCross(currentSide))
-                .sorted((p1, p2) -> Integer.compare(p1.getCrossings(), p2.getCrossings())) // сортировка по количеству переправ
+                .sorted((p1, p2) -> Integer.compare(p1.getCrossings(), p2.getCrossings()))
                 .toList();
 
         List<Person> availableCannibals = people.stream()
@@ -147,20 +148,14 @@ public class Situation {
                 .sorted((p1, p2) -> Integer.compare(p1.getCrossings(), p2.getCrossings()))
                 .toList();
 
-        if (m > availableMissionaries.size() || c > availableCannibals.size()) {
-            System.out.println("❌ На берегу " + currentSide + " недостаточно доступных персонажей!");
+        if (missioners > availableMissionaries.size() || cannibals > availableCannibals.size()) {
+            System.out.println("На берегу " + currentSide + " недостаточно доступных персонажей!");
             return false;
         }
 
-        // Подсчитываем новое состояние берегов
-        int newMLeft = (boatSide == CoastSide.LEFT) ? missionariesLeft - m : missionariesLeft + m;
-        int newCLeft = (boatSide == CoastSide.LEFT) ? cannibalsLeft - c : cannibalsLeft + c;
-
-//        int newMRight = totalMissionaries - newMLeft;
-//        int newCRight = totalCannibals - newCLeft;
-//        // Проверка безопасного состояния
-//        if (!isValid(newMLeft, newCLeft, newMRight, newCRight))
-//            return false;
+        // Рассчитываем количество персонажей на левом берегу
+        int newMLeft = (boatSide == CoastSide.LEFT) ? missionariesLeft - missioners : missionariesLeft + missioners;
+        int newCLeft = (boatSide == CoastSide.LEFT) ? cannibalsLeft - cannibals : cannibalsLeft + cannibals;
 
         // Обновляем состояние игры
         missionariesLeft = newMLeft;
@@ -168,19 +163,30 @@ public class Situation {
         missionariesRigth = totalMissionaries - newMLeft;
         cannibalsRigth = totalCannibals - newCLeft;
         boatSide = (boatSide == CoastSide.LEFT) ? CoastSide.RIGHT : CoastSide.LEFT;
-        boatCrossings++; // фиксируем переправу лодки
+        boatCrossings++;
 
         // Переправляем выбранных персонажей
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < missioners; i++) {
             availableMissionaries.get(i).cross(currentSide);
         }
-        for (int i = 0; i < c; i++) {
+        for (int i = 0; i < cannibals; i++) {
             availableCannibals.get(i).cross(currentSide);
         }
         String coast = getBoatSide().equals(CoastSide.LEFT) ? "левом" : "правом";
-//        System.out.println(missionariesLeft+"  c"+cannibalsLeft);
-//        System.out.println("✅ Переправа выполнена. Лодка теперь на " + coast  + " берегу.");
         return true;
+    }
+
+    /**
+     * Функция для создания объекта игрового поля после хода
+     * @param move — массив с ходом
+     * @return — Если ход возможен, то возвращает объект игрового поля после хода; иначе — null
+     */
+    public Situation generateNextSituation(int[] move){
+        Situation nextSituation = new Situation(this);
+        if (nextSituation.makeMove(move[0], move[1])){
+            return nextSituation;
+        } return null;
+
     }
 
     public int getBoatCrossings() {
