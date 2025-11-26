@@ -1,11 +1,15 @@
-package model;
+/************************************************************************
+ * Класс: Situation
+ * Дата: 10.10.2025
+ * Разработчик: Попов Иван
+ * ======================================================================
+ * Класс, описывающий состояние игры "Миссионеры и людоеды".
+ ************************************************************************/
 
+package model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Класс, описывающий состояние игры "Миссионеры и людоеды".
- */
 public class Situation {
     private int missionariesLeft;           // Количество миссионеров на левом берегу
     private int cannibalsLeft;              // Количество каннибалов на левом берегу
@@ -110,12 +114,12 @@ public class Situation {
         int mRight = totalMissionaries - missionariesLeft;
         int cRight = totalCannibals - cannibalsLeft;
         if (boatCrossings >= maxBoatCrossings) {
-            System.out.println("Лодка больше не может переправляться! Достигнут лимит переправ.");
+//            System.out.println("Лодка больше не может переправляться! Достигнут лимит переправ.");
             return true;
         }
         if ((missionariesLeft > 0 && missionariesLeft < cannibalsLeft)
                 || (mRight > 0 && mRight < cRight)) {
-            System.out.println("Людоеды съели миссионеров! Игра окончена.");
+//            System.out.println("Людоеды съели миссионеров! Игра окончена.");
             return true;
         }
         return false;
@@ -149,7 +153,7 @@ public class Situation {
                 .toList();
 
         if (missioners > availableMissionaries.size() || cannibals > availableCannibals.size()) {
-            System.out.println("На берегу " + currentSide + " недостаточно доступных персонажей!");
+//            System.out.println("На берегу " + currentSide + " недостаточно доступных персонажей!");
             return false;
         }
 
@@ -174,19 +178,6 @@ public class Situation {
         }
         String coast = getBoatSide().equals(CoastSide.LEFT) ? "левом" : "правом";
         return true;
-    }
-
-    /**
-     * Функция для создания объекта игрового поля после хода
-     * @param move — массив с ходом
-     * @return — Если ход возможен, то возвращает объект игрового поля после хода; иначе — null
-     */
-    public Situation generateNextSituation(int[] move){
-        Situation nextSituation = new Situation(this);
-        if (nextSituation.makeMove(move[0], move[1])){
-            return nextSituation;
-        } return null;
-
     }
 
     public int getBoatCrossings() {
