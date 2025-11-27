@@ -21,7 +21,7 @@ public class SearchSolve {
         int maxPersonCrossings = 5;     // максимум переправ для каждого человека
         int maxBoatCrossings = 50;      // максимум переправ лодки
         int maxDepth = 200;              // максимальная глубина поиска
-        SolveType solveType = SolveType.ASTAR; // Метод поиска
+        SolveType solveType = SolveType.GRADIENT; // Метод поиска
         List<String> solution;          // Список найденного решения
         // Создаём начальное состояние игры
         Situation game = new Situation(missionaries, cannibals, maxPersonCrossings, maxBoatCrossings);
