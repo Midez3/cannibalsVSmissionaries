@@ -21,7 +21,7 @@ public class SearchSolve {
         int maxPersonCrossings = 5;     // максимум переправ для каждого человека
         int maxBoatCrossings = 50;      // максимум переправ лодки
         int maxDepth = 200;              // максимальная глубина поиска
-        SolveType solveType = SolveType.BFS; // Метод поиска
+        SolveType solveType = SolveType.ASTAR; // Метод поиска
         List<String> solution;          // Список найденного решения
         // Создаём начальное состояние игры
         Situation game = new Situation(missionaries, cannibals, maxPersonCrossings, maxBoatCrossings);
@@ -36,6 +36,16 @@ public class SearchSolve {
             case SolveType.DFS: {
                 SolveDFS solveDFS = new SolveDFS(maxDepth);
                 solution = solveDFS.searchSolutionWithUseRecursion(new SolveNode(game), new ArrayList<>());
+                break;
+            }
+            case SolveType.GRADIENT:{
+                SolveGradient solveGradient = new SolveGradient();
+                solution = solveGradient.searchSolution(game);
+                break;
+            }
+            case SolveType.ASTAR:{
+                SolveAStar solveAStar = new SolveAStar();
+                solution = solveAStar.searchSolution(game);
                 break;
             }
             default:

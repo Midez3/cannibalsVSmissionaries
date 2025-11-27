@@ -16,6 +16,7 @@ public class SolveNode {
     private Situation state; // Состояние игрового поля
     private SolveNode parent; // родительский узел
     private int depth; // Количество шагов до текущего узла
+    private int cost; // Количество шагов до текущего узла
 
     /**
      * Конструктор
@@ -48,6 +49,16 @@ public class SolveNode {
     }
 
     /**
+     * Конструктор
+     */
+    public SolveNode(Situation state, SolveNode parent, int depth, int cost) {
+        this.state = state;
+        this.parent = parent;
+        this.depth = depth;
+        this.cost = cost;
+    }
+
+    /**
      * Гетер получения родительского узла
      * @return — возвращает родительский узел
      */
@@ -77,5 +88,9 @@ public class SolveNode {
      */
     public int getNextDepth() {
         return depth + 1;
+    }
+
+    public int getCost() {
+        return cost;
     }
 }
