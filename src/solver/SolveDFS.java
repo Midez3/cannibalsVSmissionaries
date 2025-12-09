@@ -19,6 +19,7 @@ public class SolveDFS extends AbstractSolve {
     public SolveDFS(int maxDepth) {
         this.maxDepth = maxDepth;
     }
+
     private String getDescriptionForMove(Situation previousSituation){
         return "Лодка находится на " + previousSituation.getBoatSide() +" береге";
     }
@@ -31,8 +32,11 @@ public class SolveDFS extends AbstractSolve {
      * @return — список ходов для прохождения игры
      */
     public List<String> searchSolutionWithUseRecursion(SolveNode lastNode, List<String> path) {
+        effeciencyEvaluationSearch.setStartTime();
         Situation previousSituation = lastNode.getState();
         if (previousSituation.isWinning()) {
+            effeciencyEvaluationSearch.setDifferenceTime();
+            effeciencyEvaluationSearch.setLengthPath(path.size());
             return path;
         }
         if (previousSituation.isLosing() || lastNode.getDepth() >= maxDepth) {
@@ -40,15 +44,18 @@ public class SolveDFS extends AbstractSolve {
         }
         for (int[] move : NextSituation.POSSIBLE_MOVES) {
             Situation newSituation = NextSituation.getNewSituation(previousSituation, move);
+            effeciencyEvaluationSearch.incrementCountNode();
             if (newSituation == null) continue;
-            SolveNode nextNode = new SolveNode(newSituation, lastNode.getNextDepth());
+            SolveNode childNode = new SolveNode(newSituation, lastNode.getNextDepth());
+            effeciencyEvaluationSearch.setMaxDepth(lastNode.getNextDepth());
             path.add(getDescriptionForMove(previousSituation, move));
-            List<String> result = searchSolutionWithUseRecursion(nextNode, path);
+            List<String> result = searchSolutionWithUseRecursion(childNode, path);
             if (!result.isEmpty()) {
                 return result;
             }
             path.removeLast();
         }
+        effeciencyEvaluationSearch.setDifferenceTime();
         return Collections.emptyList();
     }
 

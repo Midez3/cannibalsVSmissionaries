@@ -25,12 +25,10 @@ public class SolveAStar extends AbstractSolve {
      */
     @Override
     public List<String> searchSolution(Situation initialSituation) {
-
+        effeciencyEvaluationSearch.setStartTime();
         PriorityQueue<SolveNode> queue = new PriorityQueue<>(
                 Comparator.comparingInt(SolveNode::getCost)
         );
-
-//        Set<Situation> visited = new HashSet<>();
 
         int coast = countPersonOnLeftCoast(initialSituation);
         queue.add(new SolveNode(initialSituation, null, 0, coast));
@@ -38,17 +36,15 @@ public class SolveAStar extends AbstractSolve {
         while (!queue.isEmpty()) {
             SolveNode current = queue.poll();
             if (current.getState().isWinning()) {
+                effeciencyEvaluationSearch.setDifferenceTime();
                 return buildPath(current);
             }
-//            if (visited.contains(current.getState())) continue;
-//            visited.add(current.getState());
-
             for (NextSituation nextSituation : NextSituation.generateNextSituationList(current.getState())) {
                 Situation situation = nextSituation.getSituation();
+                effeciencyEvaluationSearch.incrementCountNode();
+                effeciencyEvaluationSearch.setMaxDepth(current.getNextDepth());
 
                 if (situation.isLosing()) continue;
-//                if (visited.contains(situation)) continue;
-
                 int cost = countPersonOnLeftCoast(situation) + current.getNextDepth();
 
                 SolveNode child = new SolveNode(
@@ -61,7 +57,7 @@ public class SolveAStar extends AbstractSolve {
                 queue.add(child);
             }
         }
-
+        effeciencyEvaluationSearch.setDifferenceTime();
         return Collections.emptyList();
     }
 

@@ -23,6 +23,7 @@ public class SolveBFS extends AbstractSolve {
      */
     @Override
     public List<String> searchSolution(Situation initialSituation) {
+        effeciencyEvaluationSearch.setStartTime();
         Queue<SolveNode> queue = new LinkedList<>();
         Situation newSituation;
         queue.add(new SolveNode(initialSituation));
@@ -31,6 +32,7 @@ public class SolveBFS extends AbstractSolve {
             SolveNode current = queue.poll();
 
             if (current.getState().isWinning()) {
+                effeciencyEvaluationSearch.setDifferenceTime();
                 return buildPath(current); // строим путь по родителям
             }
 
@@ -38,8 +40,10 @@ public class SolveBFS extends AbstractSolve {
 
             for (int[] move : NextSituation.POSSIBLE_MOVES){
                 newSituation = NextSituation.getNewSituation(current.getState(), move);
+                effeciencyEvaluationSearch.incrementCountNode();
                 if (newSituation!=null) {
                     queue.add(new SolveNode(newSituation, current));
+                    effeciencyEvaluationSearch.setMaxDepth(buildPath(current).size());
                 }
             }
         }

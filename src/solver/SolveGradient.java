@@ -35,29 +35,27 @@ public class SolveGradient extends AbstractSolve {
      */
     @Override
     public List<String> searchSolution(Situation initialSituation) {
+        effeciencyEvaluationSearch.setStartTime();
         PriorityQueue<SolveNode> queue = new PriorityQueue<>(
                 Comparator.comparingInt(node -> -node.getCost())
         );
-
         queue.add(new SolveNode(initialSituation));
-
         while (!queue.isEmpty()) {
             SolveNode current = queue.poll();
-
             if (current.getState().isWinning()) {
+                effeciencyEvaluationSearch.setDifferenceTime();
                 return buildPath(current);
             }
-
             if (current.getState().isLosing()) continue;
-
             if (current.getNextDepth() >= maxDepthForCheck) continue;
-            List<SolveNode> nextNodes = new ArrayList<>();
             for (NextSituation nextSituation : NextSituation.generateNextSituationList(current.getState())) {
                 int coastSituation = countPersonOnRightCoast(nextSituation.getSituation());
                 queue.add(new SolveNode(nextSituation.getSituation(), current, current.getNextDepth() ,coastSituation));
+                effeciencyEvaluationSearch.setMaxDepth(current.getNextDepth());
+                effeciencyEvaluationSearch.incrementCountNode();
             }
         }
-
+        effeciencyEvaluationSearch.setDifferenceTime();
         return Collections.emptyList();
     }
 
