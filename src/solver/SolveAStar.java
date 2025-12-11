@@ -13,6 +13,8 @@ import model.Situation;
 import java.util.*;
 
 public class SolveAStar extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.ASTAR);
+
     /**
      * Конструктор класса
      */
@@ -37,7 +39,9 @@ public class SolveAStar extends AbstractSolve {
             SolveNode current = queue.poll();
             if (current.getState().isWinning()) {
                 effeciencyEvaluationSearch.setDifferenceTime();
-                return buildPath(current);
+                List<String> path = buildPath(current);
+                effeciencyEvaluationSearch.setLengthPath(path);
+                return path; // строим путь по родителям
             }
             for (NextSituation nextSituation : NextSituation.generateNextSituationList(current.getState())) {
                 Situation situation = nextSituation.getSituation();
@@ -70,6 +74,8 @@ public class SolveAStar extends AbstractSolve {
     private int countPersonOnLeftCoast(Situation situation) {
         return situation.getCannibalsLeft() + situation.getMissionariesLeft();
     }
+
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
 
 
 }

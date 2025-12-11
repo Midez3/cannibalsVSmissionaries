@@ -14,9 +14,6 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractSolve implements SolveInterface {
-    protected EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch();
-
-    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
     /**
      * Функция для получения хода, требуемого для перехода от предыдущей ситуации к текущей
      * @param currentSituation — текущая ситуация
@@ -55,7 +52,6 @@ public abstract class AbstractSolve implements SolveInterface {
             node = node.getParent();
         }
         Collections.reverse(path);
-        effeciencyEvaluationSearch.setLengthPath(path.size());
         return path;
     }
 

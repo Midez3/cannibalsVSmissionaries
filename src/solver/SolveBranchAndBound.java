@@ -5,6 +5,9 @@ import model.Situation;
 import java.util.*;
 
 public class SolveBranchAndBound extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.BRANCH_AND_BOUND);
+
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
 
     public SolveBranchAndBound() {}
 
@@ -12,14 +15,12 @@ public class SolveBranchAndBound extends AbstractSolve {
     public List<String> searchSolution(Situation initialSituation) {
         effeciencyEvaluationSearch.setStartTime();
 
-        // Очередь с приоритетом по f = g + h
         PriorityQueue<SolveNode> queue = new PriorityQueue<>(
                 Comparator.comparingInt(SolveNode::getCost)
         );
 
         // Инициализация корневого узла
-        int h = countPersonOnLeftCoast(initialSituation); // эвристика: персонажи на левом берегу
-        SolveNode root = new SolveNode(initialSituation, null, 0, h);
+        SolveNode root = new SolveNode(initialSituation, null, 0, 0);
         queue.add(root);
 
         // Минимальная известная стоимость до каждого состояния
@@ -31,16 +32,16 @@ public class SolveBranchAndBound extends AbstractSolve {
         while (!queue.isEmpty()) {
             SolveNode current = queue.poll();
             Situation currState = current.getState();
-            int g = current.getNextDepth();      // стоимость пути до текущего узла
-            int f = current.getCost();           // f = g + h
+            int currentDepth = current.getDepth();
+            int currentCost = current.getCost();
 
             // Пропускаем узлы, которые не могут улучшить найденное решение
-            if (f >= bestCost) continue;
+            if (currentCost >= bestCost) continue;
 
             // Если выигрышное состояние
             if (currState.isWinning()) {
                 bestSolution = current;
-                bestCost = f;
+                bestCost = currentCost;
                 continue; // ищем возможное ещё более короткое решение
             }
 
@@ -54,21 +55,20 @@ public class SolveBranchAndBound extends AbstractSolve {
 
                 if (next.isLosing()) continue;
 
-                int newG = g + 1; // стоимость пути до нового узла
-                int newH = countPersonOnLeftCoast(next); // эвристика
-                int newF = newG + newH;
+                int newDepth = currentDepth + 1; // стоимость пути до нового узла
+                int newCost = newDepth;
 
                 // Если уже есть лучший путь к этому состоянию, пропускаем
-//                if (visited.containsKey(next.getKey()) && visited.get(next.getKey()) <= newG) continue;
+//                if (visited.containsKey(next.getKey()) && visited.get(next.getKey()) <= newDepth) continue;
 
                 SolveNode child = new SolveNode(
                         next,
                         current,
-                        newG,
-                        newF
+                        newDepth,
+                        newCost
                 );
 
-//                visited.put(next.getKey(), newG);
+//                visited.put(next.getKey(), newDepth);
                 queue.add(child);
             }
         }
@@ -76,7 +76,9 @@ public class SolveBranchAndBound extends AbstractSolve {
         effeciencyEvaluationSearch.setDifferenceTime();
 
         if (bestSolution != null) {
-            return buildPath(bestSolution);
+            List<String> path = buildPath(bestSolution);
+            effeciencyEvaluationSearch.setLengthPath(path);
+            return path;
         }
 
         return Collections.emptyList();

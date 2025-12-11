@@ -11,6 +11,9 @@ import model.Situation;
 import java.util.*;
 
 public class SolveDFS extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.DFS);
+
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
     private final int maxDepth; // максимальная глубина поиска
 
     /**
@@ -73,7 +76,9 @@ public class SolveDFS extends AbstractSolve {
         while (!stack.isEmpty()) {
             SolveNode current = stack.pop();
             if (current.getState().isWinning()) {
-                return buildPath(current); // строим путь по родителям
+                List<String> path = buildPath(current);
+                effeciencyEvaluationSearch.setLengthPath(path);
+                return path;
             }
             if (current.getState().isLosing() || current.getDepth() >= maxDepth)
                 continue;
@@ -99,8 +104,9 @@ public class SolveDFS extends AbstractSolve {
         while (!stack.isEmpty()) {
             SolveNode current = stack.pop();
             if (current.getState().isWinning()) {
-                return buildPath(current); // строим путь по родителям
-            }
+                List<String> path = buildPath(current);
+                effeciencyEvaluationSearch.setLengthPath(path);
+                return path;            }
             if (current.getState().isLosing() || current.getDepth() >= maxDepth)
                 continue;
             for (NextSituation nextSituation : NextSituation.generateNextSituationList(current.getState())) {

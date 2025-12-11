@@ -4,23 +4,18 @@ import model.Situation;
 import java.util.*;
 
 public class SolveUniformCost extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.UNIFORM_COST);
 
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
     public SolveUniformCost() {}
 
     @Override
     public List<String> searchSolution(Situation initialSituation) {
         effeciencyEvaluationSearch.setStartTime();
-
-//        PriorityQueue<SolveNode> queue = new PriorityQueue<>(
-//                Comparator.comparingInt(SolveNode::getCost)
-//        );
-
         Queue<SolveNode> queue = new LinkedList<>();
-        // Начальное состояние: стоимость пути = 0
         SolveNode root = new SolveNode(initialSituation, null, 0, 0);
         queue.add(root);
         HashMap<String, Integer> visited = new HashMap<>();
-        int bestSolutionCost = Integer.MAX_VALUE;
         SolveNode bestSolution = null;
 
         while (!queue.isEmpty()) {
@@ -60,7 +55,9 @@ public class SolveUniformCost extends AbstractSolve {
         }
         effeciencyEvaluationSearch.setDifferenceTime();
         if (bestSolution != null) {
-            return buildPath(bestSolution);
+            List<String> path = buildPath(bestSolution);
+            effeciencyEvaluationSearch.setLengthPath(path);
+            return path;
         }
         return Collections.emptyList();
     }

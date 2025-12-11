@@ -11,6 +11,9 @@ import model.Situation;
 import java.util.*;
 
 public class SolveBFS extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.BFS);
+
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
     /**
      * Конструктор класса
      */
@@ -33,7 +36,9 @@ public class SolveBFS extends AbstractSolve {
 
             if (current.getState().isWinning()) {
                 effeciencyEvaluationSearch.setDifferenceTime();
-                return buildPath(current); // строим путь по родителям
+                List<String> path = buildPath(current);
+                effeciencyEvaluationSearch.setLengthPath(path);
+                return path; // строим путь по родителям
             }
 
             if (current.getState().isLosing()) continue;

@@ -39,7 +39,7 @@ public class SolveCompare {
             SolveBFS solveBFS = new SolveBFS();
             solveBFS.searchSolution(game);
             methodNames.add(SolveType.BFS.name());
-            results.add(solveBFS.effeciencyEvaluationSearch);
+            results.add(solveBFS.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в BFS: " + ex.getMessage());
         }
@@ -48,7 +48,7 @@ public class SolveCompare {
             SolveDFS solveDFS = new SolveDFS(maxDepth);
             solveDFS.searchSolutionWithUseRecursion(new SolveNode(game), new ArrayList<>());
             methodNames.add(SolveType.DFS.name());
-            results.add(solveDFS.effeciencyEvaluationSearch);
+            results.add(solveDFS.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в DFS: " + ex.getMessage());
         }
@@ -57,7 +57,7 @@ public class SolveCompare {
             SolveGradient solveGradient = new SolveGradient();
             solveGradient.searchSolution(game);
             methodNames.add(SolveType.GRADIENT.name());
-            results.add(solveGradient.effeciencyEvaluationSearch);
+            results.add(solveGradient.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в Gradient: " + ex.getMessage());
         }
@@ -66,7 +66,7 @@ public class SolveCompare {
             SolveAStar solveAStar = new SolveAStar();
             solveAStar.searchSolution(game);
             methodNames.add(SolveType.ASTAR.name());
-            results.add(solveAStar.effeciencyEvaluationSearch);
+            results.add(solveAStar.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в aStar: " + ex.getMessage());
         }
@@ -75,7 +75,7 @@ public class SolveCompare {
             SolveBranchAndBound solveBranchAndBound = new SolveBranchAndBound();
             solveBranchAndBound.searchSolution(game);
             methodNames.add(SolveType.BRANCH_AND_BOUND.name());
-            results.add(solveBranchAndBound.effeciencyEvaluationSearch);
+            results.add(solveBranchAndBound.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в Branch and Borders: " + ex.getMessage());
         }
@@ -84,7 +84,7 @@ public class SolveCompare {
             SolveUniformCost solveUniformCost = new SolveUniformCost();
             solveUniformCost.searchSolution(game);
             methodNames.add(SolveType.UNIFORM_COST.name());
-            results.add(solveUniformCost.effeciencyEvaluationSearch);
+            results.add(solveUniformCost.getEffeciencyEvaluationSearch());
         } catch (Exception ex) {
             System.out.println("Ошибка в Branch and Borders: " + ex.getMessage());
         }

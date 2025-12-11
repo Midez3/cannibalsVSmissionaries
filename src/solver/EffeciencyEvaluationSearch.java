@@ -11,11 +11,16 @@ package solver;
 import java.util.List;
 
 public class EffeciencyEvaluationSearch {
+    private SolveType solveType;
     private int maxDepth;
     private int lengthPath;
     private long countNode;
     private long startTime;
     private long differenceTime;
+
+    public EffeciencyEvaluationSearch(SolveType solveType) {
+        this.solveType = solveType;
+    }
 
     public void setStartTime() {
         this.startTime = System.nanoTime();
@@ -49,6 +54,10 @@ public class EffeciencyEvaluationSearch {
 
     public void setLengthPath(int lengthPath) {
         this.lengthPath = lengthPath;
+    }
+
+    public void setLengthPath(List<?> lengthPath) {
+        this.lengthPath = lengthPath.size();
     }
 
     public long getCountNode() {
@@ -99,6 +108,8 @@ public class EffeciencyEvaluationSearch {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+        builder.append("\n======               Метод             ======\n");
+        builder.append("Название: ").append(solveType.name()).append("\n");
         builder.append("\n====== Результаты эффективности поиска ======\n");
         builder.append("Максимальная глубина: ").append(maxDepth).append("\n");
         builder.append("Длина найденного пути: ").append(lengthPath).append("\n");

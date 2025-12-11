@@ -14,6 +14,9 @@ import model.Situation;
 import java.util.*;
 
 public class SolveGradient extends AbstractSolve {
+    private EffeciencyEvaluationSearch effeciencyEvaluationSearch = new EffeciencyEvaluationSearch(SolveType.GRADIENT);
+
+    public EffeciencyEvaluationSearch getEffeciencyEvaluationSearch(){return effeciencyEvaluationSearch;}
     private int maxDepthForCheck = Integer.MAX_VALUE; // максимальная глубина поиска
 
     /**
@@ -44,7 +47,9 @@ public class SolveGradient extends AbstractSolve {
             SolveNode current = queue.poll();
             if (current.getState().isWinning()) {
                 effeciencyEvaluationSearch.setDifferenceTime();
-                return buildPath(current);
+                List<String> path = buildPath(current);
+                effeciencyEvaluationSearch.setLengthPath(path);
+                return path;
             }
             if (current.getState().isLosing()) continue;
             if (current.getNextDepth() >= maxDepthForCheck) continue;
