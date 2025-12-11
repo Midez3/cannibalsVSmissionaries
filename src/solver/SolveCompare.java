@@ -38,7 +38,7 @@ public class SolveCompare {
         try {
             SolveBFS solveBFS = new SolveBFS();
             solveBFS.searchSolution(game);
-            methodNames.add("BFS");
+            methodNames.add(SolveType.BFS.name());
             results.add(solveBFS.effeciencyEvaluationSearch);
         } catch (Exception ex) {
             System.out.println("Ошибка в BFS: " + ex.getMessage());
@@ -47,7 +47,7 @@ public class SolveCompare {
         try {
             SolveDFS solveDFS = new SolveDFS(maxDepth);
             solveDFS.searchSolutionWithUseRecursion(new SolveNode(game), new ArrayList<>());
-            methodNames.add("DFS");
+            methodNames.add(SolveType.DFS.name());
             results.add(solveDFS.effeciencyEvaluationSearch);
         } catch (Exception ex) {
             System.out.println("Ошибка в DFS: " + ex.getMessage());
@@ -56,7 +56,7 @@ public class SolveCompare {
         try {
             SolveGradient solveGradient = new SolveGradient();
             solveGradient.searchSolution(game);
-            methodNames.add("Gradient");
+            methodNames.add(SolveType.GRADIENT.name());
             results.add(solveGradient.effeciencyEvaluationSearch);
         } catch (Exception ex) {
             System.out.println("Ошибка в Gradient: " + ex.getMessage());
@@ -65,12 +65,29 @@ public class SolveCompare {
         try {
             SolveAStar solveAStar = new SolveAStar();
             solveAStar.searchSolution(game);
-            methodNames.add("aStar");
+            methodNames.add(SolveType.ASTAR.name());
             results.add(solveAStar.effeciencyEvaluationSearch);
         } catch (Exception ex) {
             System.out.println("Ошибка в aStar: " + ex.getMessage());
         }
-
+        // Поиск методом Ветвей и границ
+        try {
+            SolveBranchAndBound solveBranchAndBound = new SolveBranchAndBound();
+            solveBranchAndBound.searchSolution(game);
+            methodNames.add(SolveType.BRANCH_AND_BOUND.name());
+            results.add(solveBranchAndBound.effeciencyEvaluationSearch);
+        } catch (Exception ex) {
+            System.out.println("Ошибка в Branch and Borders: " + ex.getMessage());
+        }
+        // Поиск методом Равных цен
+        try {
+            SolveUniformCost solveUniformCost = new SolveUniformCost();
+            solveUniformCost.searchSolution(game);
+            methodNames.add(SolveType.UNIFORM_COST.name());
+            results.add(solveUniformCost.effeciencyEvaluationSearch);
+        } catch (Exception ex) {
+            System.out.println("Ошибка в Branch and Borders: " + ex.getMessage());
+        }
         if (results.isEmpty()) {
             System.out.println("Нет данных для сравнения.");
             return;

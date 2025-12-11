@@ -68,7 +68,7 @@ public class SolveAStar extends AbstractSolve {
      * @return — количество персонажей на правом берегу
      */
     private int countPersonOnLeftCoast(Situation situation) {
-        return situation.getCannibalsRigth() + situation.getMissionariesRigth();
+        return situation.getCannibalsLeft() + situation.getMissionariesLeft();
     }
 
 
